@@ -18,3 +18,5 @@
 - [x] Create home screen
 - [x] Update main.dart with auth wrapper
 - [x] Test authentication flow and handle errors
+- [x] Fix overflow issues in login and signup screens
+- [x] Fix overflow issues in home screen alert cards

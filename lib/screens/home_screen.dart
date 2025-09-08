@@ -19,21 +19,25 @@ class _HomeScreenState extends State<HomeScreen> {
 
     try {
       await _authService.signOut();
+      
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error signing out: ${e.toString()}')),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error signing out: ${e.toString()}')),
+        );
+      }
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final user = _authService.currentUser;
-
+    
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.green[700],
@@ -289,7 +293,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     description,
                     style: const TextStyle(fontSize: 14),
                     softWrap: true,
-                    overflow: TextOverflow.visible,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
                   ),
                   const SizedBox(height: 4),
                   Text(
