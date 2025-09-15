@@ -8,7 +8,7 @@ class LogoWidget extends StatelessWidget {
     return Column(
       children: [
         Image.asset(
-          "assets/Gemini_Generated_Image_5avf1q5avf1q5avf.png",
+          "assets/ecocity.jpg", // ensure this path matches your asset
           height: 150, // adjust size
         ),
         const SizedBox(height: 20),
