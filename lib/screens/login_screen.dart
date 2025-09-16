@@ -219,21 +219,12 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                         const SizedBox(height: 16),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.pushNamed(context, '/signup');
-                          },
-                          child: const Text(
-                            'Don\'t have an account? Register Here',
-                            style: TextStyle(color: Colors.green),
-                          ),
-                        ),
                       ],
                     ),
                   ),
                 ),
               ),
-              // Terms & register row at bottom
+              // Terms & Conditions and single register link at bottom
               Column(
                 children: [
                   const Divider(),
