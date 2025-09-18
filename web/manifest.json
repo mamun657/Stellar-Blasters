@@ -1,6 +1,6 @@
 {
-    "name": "login_signup",
-    "short_name": "login_signup",
+    "name": "Eco City",
+    "short_name": "Eco City",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

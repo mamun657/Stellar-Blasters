@@ -57,7 +57,7 @@ class _LoginScreenState extends State<LoginScreen> {
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(
           12,
-        ), // reduced from 30 for a more rectangular look
+        ), 
         borderSide: BorderSide.none,
       ),
     );
@@ -160,7 +160,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           alignment: Alignment.centerRight,
                           child: TextButton(
                             onPressed: () {
-                              // placeholder: implement password reset flow
+                             
                               Navigator.pushNamed(context, '/forgot_password');
                             },
                             child: const Text(
