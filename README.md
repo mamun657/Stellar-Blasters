@@ -1,16 +1,85 @@
-# login_signup
+🌍 Eco City
 
-A new Flutter project.
+Eco City is a Flutter application designed to promote sustainable living and provide users with a smart, data-driven experience. It integrates Firebase Authentication and Cloud Firestore for secure user management while also laying the foundation to incorporate Name Data, Prediction Data, and Environmental Intelligence Data to support healthier cities and informed decision-making.
 
-## Getting Started
+✨ Features
 
-This project is a starting point for a Flutter application.
+🔑 Authentication
 
-A few resources to get you started if this is your first Flutter project:
+Sign up with email & password
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+Login & logout support
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Real-time auth state management with Firebase
+
+🏠 Screens
+
+Login Screen – Email/password login form
+
+Signup Screen – Create a new account
+
+Home Screen – Dashboard for eco insights
+
+📊 Data & Intelligence
+
+Name Data – User-specific personalization (profiles, preferences, eco scores)
+
+Prediction Data – Forecast trends like energy use, pollution exposure, or daily eco actions
+
+Environmental Intelligence Data – Integration with real-world datasets (climate, air quality, green index, etc.) to guide sustainable decisions
+
+🔥 Firebase Integration
+
+Firebase Core
+
+Firebase Auth
+
+Cloud Firestore
+
+🧪 Testing
+
+Unit & widget tests using flutter_test
+
+Example test ensures login screen loads properly🌍 Eco City
+
+Eco City is a Flutter application designed to promote sustainable living and provide users with a smart, data-driven experience. It integrates Firebase Authentication and Cloud Firestore for secure user management while also laying the foundation to incorporate Name Data, Prediction Data, and Environmental Intelligence Data to support healthier cities and informed decision-making.
+
+✨ Features
+
+🔑 Authentication
+
+Sign up with email & password
+
+Login & logout support
+
+Real-time auth state management with Firebase
+
+🏠 Screens
+
+Login Screen – Email/password login form
+
+Signup Screen – Create a new account
+
+Home Screen – Dashboard for eco insights
+
+📊 Data & Intelligence
+
+Name Data – User-specific personalization (profiles, preferences, eco scores)
+
+Prediction Data – Forecast trends like energy use, pollution exposure, or daily eco actions
+
+Environmental Intelligence Data – Integration with real-world datasets (climate, air quality, green index, etc.) to guide sustainable decisions
+
+🔥 Firebase Integration
+
+Firebase Core
+
+Firebase Auth
+
+Cloud Firestore
+
+🧪 Testing
+
+Unit & widget tests using flutter_test
+
+Example test ensures login screen loads properly
