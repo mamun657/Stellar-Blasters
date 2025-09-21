@@ -224,7 +224,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
-              // Terms & Conditions and single register link at bottom
+             
               Column(
                 children: [
                   const Divider(),

@@ -1,33 +1,23 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:firebase_core/firebase_core.dart';
-
-import '../lib/main.dart';
+import 'package:eco_city/main.dart';
+// 👆 Replace `eco_city` with your actual project name from pubspec.yaml
 
 void main() {
-  setUpAll(() async {
-   
-    await Firebase.initializeApp(
-      options: const FirebaseOptions(
-        apiKey: 'test-api-key',
-        appId: 'test-app-id',
-        messagingSenderId: 'test-sender-id',
-        projectId: 'test-project-id',
-      ),
-    );
-  });
-
-  testWidgets('App loads and shows login screen', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
+  testWidgets('App loads and shows Login Screen', (WidgetTester tester) async {
+    // Load the main app widget
     await tester.pumpWidget(const MyApp());
 
-    // Wait for the app to settle (e.g., Firebase initialization)
+    // Let the UI settle
     await tester.pumpAndSettle();
 
-    // Verify that the login screen is displayed
+    // ✅ Check for Login text
+    expect(find.text('Login'), findsOneWidget);
+
+    // ✅ Check if we have at least one TextFormField
     expect(find.byType(TextFormField), findsWidgets);
-    expect(find.byType(ElevatedButton), findsWidgets);
+
+    // ✅ Check if the Sign In button is there
+    expect(find.text('Sign In'), findsOneWidget);
   });
 }
