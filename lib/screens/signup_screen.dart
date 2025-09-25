@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
 import '../widgets/logo_widget.dart';
-// import your home screen widget here
-import 'eco_home_screen.dart'; // <-- update the path if needed
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -98,10 +96,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
       // ✅ Navigate to home after successful sign-up
       if (!mounted) return;
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const EcoHomeScreen()),
-      );
+      Navigator.pushReplacementNamed(context, '/home');
     } catch (e) {
       setState(() {
         _errorMessage = e.toString();
