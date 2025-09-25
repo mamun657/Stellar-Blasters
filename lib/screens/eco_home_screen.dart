@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../services/auth_service.dart';
-import 'eco_urban_health_screen.dart'; // Urban Health screen import
+import 'eco_urban_health_screen.dart';
+import 'ai_chat_screen.dart';
 
 class EcoHomeScreen extends StatelessWidget {
   const EcoHomeScreen({super.key});
@@ -140,6 +141,11 @@ class EcoHomeScreen extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const EcoUrbanHealthScreen()),
+            );
+          } else if (i == 4) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const AIChatScreen()),
             );
           }
         },

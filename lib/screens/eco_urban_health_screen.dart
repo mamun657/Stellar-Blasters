@@ -1,21 +1,14 @@
 import 'package:flutter/material.dart';
 
-class EcoUrbanHealthScreen extends StatefulWidget {
+class EcoUrbanHealthScreen extends StatelessWidget {
   const EcoUrbanHealthScreen({super.key});
-
-  @override
-  State<EcoUrbanHealthScreen> createState() => _EcoUrbanHealthScreenState();
-}
-
-class _EcoUrbanHealthScreenState extends State<EcoUrbanHealthScreen> {
-  double _selectedYear = 2025;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
 
-      // AppBar: back + logo + EcoSmart text
+      // 🟢 AppBar
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -23,12 +16,11 @@ class _EcoUrbanHealthScreenState extends State<EcoUrbanHealthScreen> {
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
-        centerTitle: true,
         title: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             Image.asset("assets/ecocity.jpg", height: 28),
-            const SizedBox(width: 6),
+            const SizedBox(width: 8),
             const Text(
               "EcoSmart",
               style: TextStyle(
@@ -38,14 +30,16 @@ class _EcoUrbanHealthScreenState extends State<EcoUrbanHealthScreen> {
             ),
           ],
         ),
+        centerTitle: true,
       ),
 
+      // 🟢 Body
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Title + description
+            // Title
             const Text(
               "Urban Health",
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
@@ -57,61 +51,50 @@ class _EcoUrbanHealthScreenState extends State<EcoUrbanHealthScreen> {
             ),
             const SizedBox(height: 16),
 
-            // Card: date range slider + View button
+            // Slider Section
             Container(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: Colors.green.shade50,
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(16),
               ),
               child: Column(
                 children: [
-                  // year marks
+                  const Text(
+                    "Use the slider to choose date range for visualizing urban health data",
+                    style: TextStyle(fontSize: 14, color: Colors.black87),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 12),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
-                      Text("2025", style: TextStyle(color: Colors.black54)),
-                      Text("2075", style: TextStyle(color: Colors.black54)),
-                    ],
+                    children: const [Text("2025"), Text("2075")],
                   ),
                   Slider(
-                    value: _selectedYear,
+                    value: 2050,
                     min: 2025,
                     max: 2075,
-                    divisions: 50,
-                    label: _selectedYear.round().toString(),
-                    activeColor: Colors.green,
-                    onChanged: (v) => setState(() => _selectedYear = v),
+                    divisions: 10,
+                    label: "2050",
+                    onChanged: (value) {},
                   ),
-                  const SizedBox(height: 8),
                   ElevatedButton(
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            "Viewing urban health data for ${_selectedYear.round()}",
-                          ),
-                        ),
-                      );
-                    },
+                    onPressed: () {},
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.green,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    child: const Text(
-                      "View",
-                      style: TextStyle(color: Colors.white),
-                    ),
+                    child: const Text("View"),
                   ),
                 ],
               ),
             ),
 
-            const SizedBox(height: 28),
+            const SizedBox(height: 24),
 
-            // What-If section
+            // What-If Scenario Builder
             const Text(
               "What-If Scenario Builder",
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
@@ -123,52 +106,42 @@ class _EcoUrbanHealthScreenState extends State<EcoUrbanHealthScreen> {
             ),
             const SizedBox(height: 16),
 
-            // 2x3 grid of big round buttons
+            // 🟢 Scenario Buttons Grid
             GridView.count(
-              crossAxisCount: 3,
-              crossAxisSpacing: 16,
-              mainAxisSpacing: 16,
+              crossAxisCount: 2,
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              children: const [
-                _ScenarioButton(
-                  icon: Icons.local_hospital,
-                  label: "Add Hospital",
-                ),
-                _ScenarioButton(icon: Icons.alt_route, label: "Add Highway"),
-                _ScenarioButton(icon: Icons.park, label: "Add Park"),
-                _ScenarioButton(
-                  icon: Icons.precision_manufacturing,
-                  label: "Add Factory",
-                ),
-                _ScenarioButton(icon: Icons.home, label: "Add Housing"),
-                _ScenarioButton(icon: Icons.eco, label: "Add Green Spaces"),
+              mainAxisSpacing: 16,
+              crossAxisSpacing: 16,
+              children: [
+                _scenarioButton(Icons.local_hospital, "Add Hospital"),
+                _scenarioButton(Icons.traffic, "Add Highway"), // ✅ Fixed
+                _scenarioButton(Icons.park, "Add Park"),
+                _scenarioButton(Icons.factory, "Add Factory"),
+                _scenarioButton(Icons.home, "Add Housing"),
+                _scenarioButton(Icons.nature, "Add Green Spaces"),
               ],
             ),
 
             const SizedBox(height: 24),
 
-            // Add Simulation (big rounded)
+            // Add Simulation Button
             Center(
               child: ElevatedButton(
                 onPressed: () {},
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green,
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 48,
-                    vertical: 16,
+                    horizontal: 40,
+                    vertical: 14,
                   ),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(28),
+                    borderRadius: BorderRadius.circular(30),
                   ),
                 ),
                 child: const Text(
                   "Add Simulation",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 16,
-                  ),
+                  style: TextStyle(fontSize: 16, color: Colors.white),
                 ),
               ),
             ),
@@ -177,33 +150,28 @@ class _EcoUrbanHealthScreenState extends State<EcoUrbanHealthScreen> {
       ),
     );
   }
-}
 
-// one circular green icon + text
-class _ScenarioButton extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  const _ScenarioButton({required this.icon, required this.label, super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(18),
-          decoration: const BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.green,
-          ),
-          child: Icon(icon, color: Colors.white, size: 28),
+  // 🟢 Reusable Scenario Button
+  static Widget _scenarioButton(IconData icon, String label) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.green,
+        borderRadius: BorderRadius.circular(100),
+      ),
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, color: Colors.white, size: 40),
+            const SizedBox(height: 8),
+            Text(
+              label,
+              textAlign: TextAlign.center,
+              style: const TextStyle(color: Colors.white, fontSize: 14),
+            ),
+          ],
         ),
-        const SizedBox(height: 8),
-        Text(
-          label,
-          textAlign: TextAlign.center,
-          style: const TextStyle(fontWeight: FontWeight.w600),
-        ),
-      ],
+      ),
     );
   }
 }
