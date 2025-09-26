@@ -33,6 +33,7 @@ flutter:
     - assets/ecocity.jpg
     - assets/icons/heart.png
     - assets/icons/run.png
-    # - assets/maps/chattogram.jpg
     - assets/maps/newyork_map.jpg
+    - assets/predicts/
+    
 

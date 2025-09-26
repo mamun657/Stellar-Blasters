@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'screens/eco_home_screen.dart'; // 👈 correct path since the file is inside lib/screens/
+import 'screens/predict_ai_screen.dart'; // <-- add this import
 
 void main() {
   runApp(const MyApp());
@@ -18,6 +19,9 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: const EcoHomeScreen(), // 👈 load your EcoHomeScreen
+      routes: {
+        '/predict': (context) => const PredictAiScreen(), // <-- named route
+      },
     );
   }
 }

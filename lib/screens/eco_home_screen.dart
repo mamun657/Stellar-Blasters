@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'predict_ai_screen.dart';
 
 class EcoHomeScreen extends StatelessWidget {
   const EcoHomeScreen({super.key});
@@ -101,11 +102,35 @@ class EcoHomeScreen extends StatelessWidget {
         selectedItemColor: Colors.white,
         unselectedItemColor: Colors.white70,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-          BottomNavigationBarItem(icon: Icon(Icons.add), label: ""),
-          BottomNavigationBarItem(icon: Icon(Icons.star), label: ""),
-          BottomNavigationBarItem(icon: Icon(Icons.favorite), label: ""),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: "Home",
+          ), // index 0
+          BottomNavigationBarItem(
+            icon: Icon(Icons.warning_amber_rounded),
+            label: "Alert",
+          ), // index 1
+          BottomNavigationBarItem(
+            icon: Icon(Icons.location_on),
+            label: "Location",
+          ), // index 2
+          BottomNavigationBarItem(
+            icon: Icon(Icons.smart_toy),
+            label: "AI Predict",
+          ), // index 3 (last / AI Predict)
         ],
+        onTap: (index) {
+          // open Predict AI page when user taps the last (fourth) button (index == 3)
+          if (index == 3) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const PredictAiScreen()),
+            );
+            return;
+          }
+
+          // TODO: add behaviour for other indexes (home, alert, location) as needed
+        },
       ),
     );
   }
@@ -132,11 +157,12 @@ class EcoHomeScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      _infoColumn("Eco Score", "100,000 pts", Colors.green),
-                      _infoColumn("Leader Board", "1", Colors.black),
-                      _infoColumn("Eco Coins", "1M", Colors.green),
+                      _infoColumn("Residence", "South Khulshi", Colors.black87),
+                      const SizedBox(width: 12),
+                      _infoColumn("Member Since", "2023", Colors.black87),
+                      const SizedBox(width: 12),
+                      _infoColumn("Score", "84", Colors.green),
                     ],
                   ),
                 ],
@@ -152,7 +178,7 @@ class EcoHomeScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title, style: const TextStyle(color: Colors.grey)),
+        Text(title, style: const TextStyle(color: Colors.grey, fontSize: 12)),
         const SizedBox(height: 4),
         Text(
           value,
@@ -169,13 +195,7 @@ class EcoHomeScreen extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.grey.shade300),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.shade200,
-            blurRadius: 6,
-            spreadRadius: 2,
-          ),
-        ],
+        boxShadow: [BoxShadow(color: Colors.grey.shade200, spreadRadius: 2)],
       ),
       child: Row(
         children: [
@@ -187,16 +207,12 @@ class EcoHomeScreen extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: const TextStyle(color: Colors.black87, fontSize: 12),
+                  style: const TextStyle(color: Colors.grey, fontSize: 12),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 6),
                 Text(
                   value,
-                  style: const TextStyle(
-                    color: Colors.orange,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                  ),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ],
             ),
@@ -204,33 +220,31 @@ class EcoHomeScreen extends StatelessWidget {
         ],
       ),
     );
-    
   }
 
   static Widget _metricGreenCard(String title, String value, IconData icon) {
     return Container(
-      padding: const EdgeInsets.all(14),
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: Colors.green.shade100,
-        borderRadius: BorderRadius.circular(16),
+        color: Colors.green.shade50,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: Colors.green.shade100),
       ),
       child: Row(
         children: [
           Icon(icon, color: Colors.green, size: 28),
-          const SizedBox(width: 8),
+          const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: const TextStyle(color: Colors.grey)),
-                const SizedBox(height: 6),
                 Text(
-                  value,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                  ),
+                  title,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
+                const SizedBox(height: 6),
+                Text(value, style: const TextStyle(color: Colors.green)),
               ],
             ),
           ),
@@ -240,22 +254,30 @@ class EcoHomeScreen extends StatelessWidget {
   }
 
   static Widget _mapCard() {
-    return SizedBox(
-      height: 250,
+    final CameraPosition initial = CameraPosition(
+      target: LatLng(22.3569, 91.7832),
+      zoom: 13,
+    );
+
+    final Marker chattogramMarker = Marker(
+      markerId: const MarkerId('chattogram'),
+      position: const LatLng(22.3569, 91.7832),
+      infoWindow: const InfoWindow(title: "South Khulshi, Chattogram"),
+    );
+
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
-        child: GoogleMap(
-          initialCameraPosition: const CameraPosition(
-            target: LatLng(22.3569, 91.7832),
-            zoom: 12,
+        child: SizedBox(
+          height: 180,
+          child: GoogleMap(
+            initialCameraPosition: initial,
+            markers: {chattogramMarker},
+            myLocationButtonEnabled: false,
+            zoomControlsEnabled: false,
+            onMapCreated: (controller) {},
           ),
-          markers: {
-            Marker(
-              markerId: const MarkerId("chattogram"),
-              position: const LatLng(22.3569, 91.7832),
-              infoWindow: const InfoWindow(title: "South Khulshi, Chattogram"),
-            ),
-          },
         ),
       ),
     );
