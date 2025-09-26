@@ -9,8 +9,7 @@ class PredictAiScreen extends StatefulWidget {
 
 class _PredictAiScreenState extends State<PredictAiScreen> {
   final TextEditingController _controller = TextEditingController();
-  final List<Map<String, String>> _messages =
-      []; // {"role":"user"|"bot", "text": "..."}
+  final List<Map<String, String>> _messages = [];
   bool _sending = false;
 
   void _send() {
@@ -22,7 +21,6 @@ class _PredictAiScreenState extends State<PredictAiScreen> {
       _controller.clear();
     });
 
-    // simulate AI response
     Future.delayed(const Duration(seconds: 1), () {
       setState(() {
         _messages.add({
@@ -38,7 +36,6 @@ class _PredictAiScreenState extends State<PredictAiScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // translucent app bar with back button to match screenshot style
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -67,7 +64,6 @@ class _PredictAiScreenState extends State<PredictAiScreen> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            // top white card (Eco Prediction)
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(16),
@@ -104,9 +100,8 @@ class _PredictAiScreenState extends State<PredictAiScreen> {
                     ),
                   ),
                   const SizedBox(width: 8),
-                  // machine learning icon shown on the right of the card
                   Image.asset(
-                    "assets/machine_learning.jpg",
+                    "assets/ml.jpg",
                     height: 48,
                     width: 48,
                     fit: BoxFit.contain,
@@ -120,21 +115,19 @@ class _PredictAiScreenState extends State<PredictAiScreen> {
               ),
             ),
 
-            const SizedBox(height: 18),
+            const SizedBox(height: 60),
 
-            // Quick question chips (match screenshot)
             Align(
               alignment: Alignment.centerLeft,
               child: Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: Text(
+                padding: const EdgeInsets.only(bottom: 4),
+                child: const Text(
                   "Quick Question",
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
             ),
 
-            // two chips side-by-side, one centered below
             Column(
               children: [
                 Row(
@@ -152,7 +145,7 @@ class _PredictAiScreenState extends State<PredictAiScreen> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 14),
+                const SizedBox(height: 8),
                 Center(
                   child: SizedBox(
                     width: MediaQuery.of(context).size.width * 0.65,
@@ -164,44 +157,49 @@ class _PredictAiScreenState extends State<PredictAiScreen> {
               ],
             ),
 
-            const SizedBox(height: 8),
+            const SizedBox(height: 10),
 
-            // messages area
             Expanded(
               child: Container(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(14),
                 ),
                 child: _messages.isEmpty
-                    ? Center(
+                    ? Align(
+                        alignment: Alignment.bottomCenter,
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            // eco-house icon next to the coach title (matches screenshot)
                             Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                const Text(
+                                Text(
                                   "Your Sustainable City Coach",
-                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20,
+                                  ),
                                 ),
                                 const SizedBox(width: 6),
                                 Image.asset(
                                   "assets/eco-house.jpg",
-                                  height: 18,
+                                  height: 22,
                                   fit: BoxFit.contain,
                                   errorBuilder: (context, error, stackTrace) =>
                                       const Icon(
                                         Icons.house,
-                                        size: 18,
+                                        size: 22,
                                         color: Colors.black54,
                                       ),
                                 ),
                               ],
                             ),
-                            const SizedBox(height: 6),
+                            const SizedBox(height: 4),
                             const Text(
                               "Ask your question for prediction...",
                               textAlign: TextAlign.center,
@@ -240,9 +238,7 @@ class _PredictAiScreenState extends State<PredictAiScreen> {
               ),
             ),
 
-            const SizedBox(height: 8),
-
-            // input row
+            const SizedBox(height: 4),
             Row(
               children: [
                 Expanded(

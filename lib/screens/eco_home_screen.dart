@@ -2,8 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'predict_ai_screen.dart';
 
-class EcoHomeScreen extends StatelessWidget {
+class EcoHomeScreen extends StatefulWidget {
   const EcoHomeScreen({super.key});
+
+  @override
+  State<EcoHomeScreen> createState() => _EcoHomeScreenState();
+}
+
+class _EcoHomeScreenState extends State<EcoHomeScreen> {
+  int _selectedIndex = 0;
+
+  void _onNavTap(int index) {
+    if (index == 3) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const PredictAiScreen()),
+      );
+      return;
+    }
+    setState(() => _selectedIndex = index);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +55,7 @@ class EcoHomeScreen extends StatelessWidget {
           children: [
             const Text(
               "Abidur's Dash",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 4),
             const Text(
@@ -47,7 +65,7 @@ class EcoHomeScreen extends StatelessWidget {
             const SizedBox(height: 16),
 
             _profileCard(),
-            const SizedBox(height: 16),
+            const SizedBox(height: 18),
 
             Row(
               children: [
@@ -69,68 +87,111 @@ class EcoHomeScreen extends StatelessWidget {
               ],
             ),
 
-            const SizedBox(height: 16),
+            const SizedBox(height: 18),
             _metricGreenCard("Air Quality Index (AQI)", "7", Icons.air),
             const SizedBox(height: 12),
             _metricGreenCard("Solar Radiation", "3.5", Icons.wb_sunny),
 
-            const SizedBox(height: 16),
+            const SizedBox(height: 18),
             Center(
               child: ElevatedButton(
                 onPressed: () {},
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.black,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 28,
+                    vertical: 14,
                   ),
                 ),
                 child: const Text(
                   "See All",
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: Colors.white, fontSize: 16),
                 ),
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 16),
 
             _mapCard(),
+            const SizedBox(height: 24),
           ],
         ),
       ),
+      bottomNavigationBar: _buildBottomNav(),
+    );
+  }
 
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.black,
-        selectedItemColor: Colors.white,
-        unselectedItemColor: Colors.white70,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: "Home",
-          ), // index 0
-          BottomNavigationBarItem(
-            icon: Icon(Icons.warning_amber_rounded),
-            label: "Alert",
-          ), // index 1
-          BottomNavigationBarItem(
-            icon: Icon(Icons.location_on),
-            label: "Location",
-          ), // index 2
-          BottomNavigationBarItem(
-            icon: Icon(Icons.smart_toy),
-            label: "AI Predict",
-          ), // index 3 (last / AI Predict)
-        ],
-        onTap: (index) {
-          // open Predict AI page when user taps the last (fourth) button (index == 3)
-          if (index == 3) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const PredictAiScreen()),
-            );
-            return;
-          }
+  Widget _buildBottomNav() {
+    return Material(
+      elevation: 8, // proper shadow, does not block buttons
+      color: Colors.green[200],
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 18),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            _navItem(
+              Icons.home,
+              "Home",
+              _selectedIndex == 0,
+              () => _onNavTap(0),
+            ),
+            _navItem(
+              Icons.warning_amber_rounded,
+              "Alert",
+              _selectedIndex == 1,
+              () => _onNavTap(1),
+            ),
+            _navItem(
+              Icons.location_on,
+              "Location",
+              _selectedIndex == 2,
+              () => _onNavTap(2),
+            ),
+            _navItem(
+              Icons.smart_toy,
+              "AI Predict",
+              _selectedIndex == 3,
+              () => _onNavTap(3),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
-          // TODO: add behaviour for other indexes (home, alert, location) as needed
-        },
+  Widget _navItem(
+    IconData icon,
+    String label,
+    bool selected,
+    VoidCallback onTap,
+  ) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        decoration: selected
+            ? BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(24),
+              )
+            : null,
+        child: Row(
+          children: [
+            Icon(icon, color: selected ? Colors.black87 : Colors.white70),
+            const SizedBox(width: 6),
+            if (selected)
+              Text(
+                label,
+                style: const TextStyle(
+                  color: Colors.black87,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
@@ -228,12 +289,25 @@ class EcoHomeScreen extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
         color: Colors.green.shade50,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: Colors.green.shade100),
+        borderRadius: BorderRadius.circular(40),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.green.shade100.withOpacity(0.4),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Row(
         children: [
-          Icon(icon, color: Colors.green, size: 28),
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: Colors.green.shade200,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, color: Colors.green.shade900, size: 28),
+          ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -243,7 +317,7 @@ class EcoHomeScreen extends StatelessWidget {
                   title,
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: 4),
                 Text(value, style: const TextStyle(color: Colors.green)),
               ],
             ),
