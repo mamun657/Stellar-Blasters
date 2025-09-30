@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'screens/eco_home_screen.dart';
 import 'screens/login_screen.dart';
+import 'screens/predict_ai_screen.dart';
 import 'screens/signup_screen.dart';
 import 'services/auth_service.dart';
 
@@ -30,6 +31,7 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const LoginScreen(),
         '/signup': (context) => const SignupScreen(),
         '/home': (context) => const EcoHomeScreen(),
+        '/predict': (context) => const PredictAiScreen(),
       },
     );
   }
