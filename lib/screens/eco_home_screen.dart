@@ -3,6 +3,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../services/auth_service.dart';
 import 'eco_urban_health_screen.dart';
 import 'ai_chat_screen.dart';
+import 'relocate_screen.dart'; 
 
 class EcoHomeScreen extends StatelessWidget {
   const EcoHomeScreen({super.key});
@@ -137,12 +138,20 @@ class EcoHomeScreen extends StatelessWidget {
         onTap: (i) {
           if (i == 0) {
             // Already Home
+          } else if (i == 1) {
+            // ✅ Relocate page
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const RelocateScreen()),
+            );
           } else if (i == 2) {
+            // Urban Health page
             Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const EcoUrbanHealthScreen()),
             );
           } else if (i == 4) {
+            // AI Chat page
             Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const AIChatScreen()),
@@ -279,7 +288,7 @@ class EcoHomeScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1), // ✅ fixed
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
