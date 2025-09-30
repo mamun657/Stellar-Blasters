@@ -4,6 +4,7 @@ import 'predict_ai_screen.dart';
 import '../services/auth_service.dart';
 import 'eco_urban_health_screen.dart';
 import 'ai_chat_screen.dart';
+import 'relocate_screen.dart';
 
 class EcoHomeScreen extends StatefulWidget {
   const EcoHomeScreen({super.key});
@@ -16,7 +17,14 @@ class _EcoHomeScreenState extends State<EcoHomeScreen> {
   int _selectedIndex = 0;
 
   void _onNavTap(int index) {
-    if (index == 3) {
+    if (index == 1) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const RelocateScreen()),
+      );
+      return;
+    }
+    if (index == 4) {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (_) => const PredictAiScreen()),
@@ -187,22 +195,28 @@ class _EcoHomeScreenState extends State<EcoHomeScreen> {
               () => _onNavTap(0),
             ),
             _navItem(
-              Icons.warning_amber_rounded,
-              "Alert",
+              Icons.route_rounded,
+              "Relocate",
               _selectedIndex == 1,
               () => _onNavTap(1),
             ),
             _navItem(
-              Icons.location_on,
-              "Location",
+              Icons.warning_amber_rounded,
+              "Urban H",
               _selectedIndex == 2,
               () => _onNavTap(2),
             ),
             _navItem(
-              Icons.smart_toy,
-              "AI Predict",
+              Icons.location_on,
+              "Navigation",
               _selectedIndex == 3,
               () => _onNavTap(3),
+            ),
+            _navItem(
+              Icons.smart_toy,
+              "AI Predict",
+              _selectedIndex == 4,
+              () => _onNavTap(4),
             ),
           ],
         ),
@@ -243,6 +257,55 @@ class _EcoHomeScreenState extends State<EcoHomeScreen> {
       ),
     );
   }
+
+  //     // 🟢 Bottom Navigation
+  //     bottomNavigationBar: BottomNavigationBar(
+  //       type: BottomNavigationBarType.fixed,
+  //       currentIndex: 0, // Home selected by default
+  //       selectedItemColor: Colors.green,
+  //       unselectedItemColor: Colors.black54,
+  //       onTap: (i) {
+  //         if (i == 0) {
+  //           // Already Home
+  //         } else if (i == 1) {
+  //           // ✅ Relocate page
+  //           Navigator.push(
+  //             context,
+  //             MaterialPageRoute(builder: (_) => const RelocateScreen()),
+  //           );
+  //         } else if (i == 2) {
+  //           // Urban Health page
+  //           Navigator.push(
+  //             context,
+  //             MaterialPageRoute(builder: (_) => const EcoUrbanHealthScreen()),
+  //           );
+  //         } else if (i == 4) {
+  //           // AI Chat page
+  //           Navigator.push(
+  //             context,
+  //             MaterialPageRoute(builder: (_) => const AIChatScreen()),
+  //           );
+  //         }
+  //       },
+  //       items: const [
+  //         BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+  //         BottomNavigationBarItem(
+  //           icon: Icon(Icons.compare_arrows),
+  //           label: "Relocate",
+  //         ),
+  //         BottomNavigationBarItem(
+  //           icon: Icon(Icons.health_and_safety),
+  //           label: "Urban H",
+  //         ),
+  //         BottomNavigationBarItem(
+  //           icon: Icon(Icons.navigation),
+  //           label: "Navigation",
+  //         ),
+  //         BottomNavigationBarItem(icon: Icon(Icons.star), label: "AI Predict"),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   // ---------------- Profile Card ----------------
   static Widget _profileCard() {
@@ -364,7 +427,7 @@ class _EcoHomeScreenState extends State<EcoHomeScreen> {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
