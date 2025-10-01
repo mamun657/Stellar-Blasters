@@ -83,3 +83,5 @@ Cloud Firestore
 Unit & widget tests using flutter_test
 
 Example test ensures login screen loads properly
+<img width="1812" height="523" alt="image" src="https://github.com/user-attachments/assets/0e4e7f2d-4824-45d5-ba7d-de3a3175a35e" />
+
