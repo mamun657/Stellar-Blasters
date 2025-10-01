@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 
-class EcoUrbanHealthScreen extends StatelessWidget {
+class EcoUrbanHealthScreen extends StatefulWidget {
   const EcoUrbanHealthScreen({super.key});
+
+  @override
+  State<EcoUrbanHealthScreen> createState() => _EcoUrbanHealthScreenState();
+}
+
+class _EcoUrbanHealthScreenState extends State<EcoUrbanHealthScreen> {
+  double _year = 2050;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-
-      // 🟢 AppBar
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -33,13 +38,11 @@ class EcoUrbanHealthScreen extends StatelessWidget {
         centerTitle: true,
       ),
 
-      // 🟢 Body
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Title
             const Text(
               "Urban Health",
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
@@ -51,7 +54,6 @@ class EcoUrbanHealthScreen extends StatelessWidget {
             ),
             const SizedBox(height: 16),
 
-            // Slider Section
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
@@ -71,12 +73,14 @@ class EcoUrbanHealthScreen extends StatelessWidget {
                     children: const [Text("2025"), Text("2075")],
                   ),
                   Slider(
-                    value: 2050,
+                    value: _year,
                     min: 2025,
                     max: 2075,
                     divisions: 10,
-                    label: "2050",
-                    onChanged: (value) {},
+                    label: _year.round().toString(),
+                    onChanged: (value) {
+                      setState(() => _year = value);
+                    },
                   ),
                   ElevatedButton(
                     onPressed: () {},
@@ -94,7 +98,6 @@ class EcoUrbanHealthScreen extends StatelessWidget {
 
             const SizedBox(height: 24),
 
-            // What-If Scenario Builder
             const Text(
               "What-If Scenario Builder",
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
@@ -106,7 +109,6 @@ class EcoUrbanHealthScreen extends StatelessWidget {
             ),
             const SizedBox(height: 16),
 
-            // 🟢 Scenario Buttons Grid
             GridView.count(
               crossAxisCount: 2,
               shrinkWrap: true,
@@ -115,7 +117,7 @@ class EcoUrbanHealthScreen extends StatelessWidget {
               crossAxisSpacing: 16,
               children: [
                 _scenarioButton(Icons.local_hospital, "Add Hospital"),
-                _scenarioButton(Icons.traffic, "Add Highway"), // ✅ Fixed
+                _scenarioButton(Icons.traffic, "Add Highway"),
                 _scenarioButton(Icons.park, "Add Park"),
                 _scenarioButton(Icons.factory, "Add Factory"),
                 _scenarioButton(Icons.home, "Add Housing"),
@@ -125,7 +127,6 @@ class EcoUrbanHealthScreen extends StatelessWidget {
 
             const SizedBox(height: 24),
 
-            // Add Simulation Button
             Center(
               child: ElevatedButton(
                 onPressed: () {},
@@ -151,7 +152,6 @@ class EcoUrbanHealthScreen extends StatelessWidget {
     );
   }
 
-  // 🟢 Reusable Scenario Button
   static Widget _scenarioButton(IconData icon, String label) {
     return Container(
       decoration: BoxDecoration(
