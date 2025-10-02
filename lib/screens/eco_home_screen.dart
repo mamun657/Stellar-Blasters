@@ -1,9 +1,10 @@
+import 'package:eco_city/widgets/global_appbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'predict_ai_screen.dart';
 import '../services/auth_service.dart';
 import 'eco_urban_health_screen.dart';
-import 'ai_chat_screen.dart';
 import 'relocate_screen.dart';
 
 class EcoHomeScreen extends StatefulWidget {
@@ -40,35 +41,7 @@ class _EcoHomeScreenState extends State<EcoHomeScreen> {
       backgroundColor: Colors.white,
 
       // 🟢 AppBar
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        title: Row(
-          children: [
-            Image.asset("assets/ecocity.jpg", height: 32),
-            const SizedBox(width: 8),
-            const Text(
-              "Eco City",
-              style: TextStyle(
-                color: Colors.green,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout, color: Colors.black87),
-            onPressed: () async {
-              await AuthService().signOut();
-              if (context.mounted) {
-                Navigator.pushReplacementNamed(context, '/login');
-              }
-            },
-          ),
-          const SizedBox(width: 16),
-        ],
-      ),
+      appBar: GlobalAppbar(),
 
       // 🟢 Body
       body: SingleChildScrollView(
@@ -80,10 +53,8 @@ class _EcoHomeScreenState extends State<EcoHomeScreen> {
               "Abidur's Dash",
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 4),
             const Text(
               "South Khulshi, Chattogram, Bangladesh",
-              style: TextStyle(color: Colors.grey),
             ),
             const SizedBox(height: 16),
 
@@ -91,26 +62,22 @@ class _EcoHomeScreenState extends State<EcoHomeScreen> {
             const SizedBox(height: 18),
 
             // Heart rate + Steps
-            Row(
+            Column(
               children: [
-                Expanded(
-                  child: _metricCard(
-                    title: "Average Heart Rate This Week",
-                    value: "85.7 BPS",
-                    color: Colors.black,
-                    valueColor: Colors.amber,
-                    icon: Icons.favorite,
-                  ),
+                _metricCard(
+                  title: "Average Heart Rate This Week",
+                  value: "85.7 BPS",
+                  color: Colors.black,
+                  valueColor: Colors.amber,
+                  icon: Icons.favorite,
                 ),
                 const SizedBox(width: 12),
-                Expanded(
-                  child: _metricCard(
-                    title: "Today's Step Count",
-                    value: "3021 Steps",
-                    color: Colors.black,
-                    valueColor: Colors.orange,
-                    icon: Icons.directions_walk,
-                  ),
+                _metricCard(
+                  title: "Today's Step Count",
+                  value: "3021 Steps",
+                  color: Colors.black,
+                  valueColor: Colors.orange,
+                  icon: Icons.directions_walk,
                 ),
               ],
             ),
@@ -258,89 +225,29 @@ class _EcoHomeScreenState extends State<EcoHomeScreen> {
     );
   }
 
-  //     // 🟢 Bottom Navigation
-  //     bottomNavigationBar: BottomNavigationBar(
-  //       type: BottomNavigationBarType.fixed,
-  //       currentIndex: 0, // Home selected by default
-  //       selectedItemColor: Colors.green,
-  //       unselectedItemColor: Colors.black54,
-  //       onTap: (i) {
-  //         if (i == 0) {
-  //           // Already Home
-  //         } else if (i == 1) {
-  //           // ✅ Relocate page
-  //           Navigator.push(
-  //             context,
-  //             MaterialPageRoute(builder: (_) => const RelocateScreen()),
-  //           );
-  //         } else if (i == 2) {
-  //           // Urban Health page
-  //           Navigator.push(
-  //             context,
-  //             MaterialPageRoute(builder: (_) => const EcoUrbanHealthScreen()),
-  //           );
-  //         } else if (i == 4) {
-  //           // AI Chat page
-  //           Navigator.push(
-  //             context,
-  //             MaterialPageRoute(builder: (_) => const AIChatScreen()),
-  //           );
-  //         }
-  //       },
-  //       items: const [
-  //         BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-  //         BottomNavigationBarItem(
-  //           icon: Icon(Icons.compare_arrows),
-  //           label: "Relocate",
-  //         ),
-  //         BottomNavigationBarItem(
-  //           icon: Icon(Icons.health_and_safety),
-  //           label: "Urban H",
-  //         ),
-  //         BottomNavigationBarItem(
-  //           icon: Icon(Icons.navigation),
-  //           label: "Navigation",
-  //         ),
-  //         BottomNavigationBarItem(icon: Icon(Icons.star), label: "AI Predict"),
-  //       ],
-  //     ),
-  //   );
-  // }
-
   // ---------------- Profile Card ----------------
   static Widget _profileCard() {
     return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(48)),
       child: Padding(
         padding: const EdgeInsets.all(16),
-        child: Row(
+        child: Column(
           children: [
             const CircleAvatar(
               radius: 28,
               backgroundImage: AssetImage("assets/ecocity.jpg"),
             ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "Abidur Chowdhury",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      _infoColumn("Residence", "South Khulshi", Colors.black87),
-                      const SizedBox(width: 12),
-                      _infoColumn("Member Since", "2023", Colors.black87),
-                      const SizedBox(width: 12),
-                      _infoColumn("Score", "84", Colors.green),
-                    ],
-                  ),
-                ],
-              ),
+            const Text(
+              "Abidur Chowdhury",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _infoColumn("Eco Score", "100,000 pts", const Color(0xFF198811)),
+                _infoColumn("LeaderBoard", "#1", const Color(0xFF198811)),
+                _infoColumn("Eco Coins", "1M", const Color(0xFF198811)),
+              ],
             ),
           ],
         ),
@@ -349,20 +256,23 @@ class _EcoHomeScreenState extends State<EcoHomeScreen> {
   }
 
   static Widget _infoColumn(String title, String value, Color color) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(title, style: const TextStyle(color: Colors.grey, fontSize: 12)),
-        const SizedBox(height: 4),
-        Text(
-          value,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: color,
-            fontSize: 14,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(title, style: const TextStyle(fontSize: 12)),
+          const SizedBox(height: 4),
+          Text(
+            value,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: color,
+              fontSize: 14,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -374,46 +284,52 @@ class _EcoHomeScreenState extends State<EcoHomeScreen> {
     required Color valueColor,
     required IconData icon,
   }) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade300),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.shade200,
-            blurRadius: 6,
-            spreadRadius: 2,
+    return Row(
+      children: [
+        // SizedBox(child: SvgPicture.asset("assets/svg/ecg.svg",)),
+        Container(
+          height: 84,
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: Colors.grey.shade300),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.shade200,
+                blurRadius: 6,
+                spreadRadius: 2,
+              ),
+            ],
           ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Icon(icon, color: Colors.white, size: 28),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(color: Colors.grey, fontSize: 12),
+          child: Row(
+            children: [
+              Icon(icon, color: Colors.white, size: 28),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: const TextStyle(color: Colors.grey, fontSize: 12),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      value,
+                      style: const TextStyle(
+                        color: Colors.orange,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 6),
-                Text(
-                  value,
-                  style: const TextStyle(
-                    color: Colors.orange,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
