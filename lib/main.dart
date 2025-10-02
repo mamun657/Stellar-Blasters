@@ -1,27 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-import 'screens/eco_home_screen.dart';
+// Screens
 import 'screens/login_screen.dart';
-import 'screens/predict_ai_screen.dart';
 import 'screens/signup_screen.dart';
-import 'services/auth_service.dart';
+import 'screens/eco_home_screen.dart';
 import 'screens/eco_urban_health_screen.dart';
-import 'services/gemini_service.dart';
+import 'screens/predict_ai_screen.dart';
+import 'screens/eco_route_screen.dart';
+import 'screens/relocate_screen.dart'; // ✅ Relocate Screen যোগ করা হলো
 
-void main() async {
+// Services
+import 'services/auth_service.dart';
+
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-
-
-  final gemini = GeminiService(apiKey: "AIzaSyACl28JncbrqtUJMt7IXFGm7rV8WbuLGog");
-
-  final response = await gemini.askGemini(
-    "Hello Gemini, can you tell me a fun eco fact?",
-  );
-  print("Gemini response: $response");
-
   runApp(const MyApp());
 }
 
@@ -37,6 +32,8 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
         useMaterial3: true,
       ),
+
+      // ✅ সব Route এখানে রেজিস্টার করা হলো
       routes: {
         '/': (context) => const AuthWrapper(),
         '/login': (context) => const LoginScreen(),
@@ -44,6 +41,8 @@ class MyApp extends StatelessWidget {
         '/home': (context) => const EcoHomeScreen(),
         '/predict': (context) => const PredictAiScreen(),
         '/urbanHealth': (ctx) => const EcoUrbanHealthScreen(),
+        '/ecoRoute': (ctx) => const EcoRouteScreen(),
+        '/relocate': (ctx) => const RelocateScreen(), // ✅ Relocate যোগ হলো
       },
     );
   }
@@ -62,9 +61,12 @@ class AuthWrapper extends StatelessWidget {
             body: Center(child: CircularProgressIndicator()),
           );
         }
+
         if (snapshot.hasData) {
+          // ✅ যদি ইউজার লগইন করা থাকে তাহলে হোমে যাবে
           return const EcoHomeScreen();
         } else {
+          // ✅ না থাকলে LoginScreen দেখাবে
           return const LoginScreen();
         }
       },
