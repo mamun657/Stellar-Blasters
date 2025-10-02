@@ -1,6 +1,9 @@
+import 'package:eco_city/widgets/global_appbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import 'eco_route_screen.dart';
 import 'predict_ai_screen.dart';
 import 'eco_urban_health_screen.dart';
 import 'relocate_screen.dart';
@@ -17,22 +20,31 @@ class _EcoHomeScreenState extends State<EcoHomeScreen> {
 
   void _onNavTap(int index) {
     if (index == 1) {
-      Navigator.pushNamed(context, '/relocate');
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const RelocateScreen()),
+      );
       return;
     }
     if (index == 2) {
-      Navigator.pushNamed(context, '/urbanHealth');
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const EcoUrbanHealthScreen()),
+      );
       return;
     }
     if (index == 3) {
-      Navigator.pushNamed(
+      Navigator.push(
         context,
-        '/ecoRoute',
-      ); // ✅ Navigation চাপলে EcoRouteScreen ওপেন হবে
+        MaterialPageRoute(builder: (_) => const EcoRouteScreen()),
+      );
       return;
     }
     if (index == 4) {
-      Navigator.pushNamed(context, '/predict');
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const PredictAiScreen()),
+      );
       return;
     }
     setState(() => _selectedIndex = index);
@@ -44,24 +56,9 @@ class _EcoHomeScreenState extends State<EcoHomeScreen> {
       backgroundColor: Colors.white,
 
       // 🟢 AppBar
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        title: Row(
-          children: [
-            Image.asset("assets/ecocity.jpg", height: 32),
-            const SizedBox(width: 8),
-            const Text(
-              "Eco City",
-              style: TextStyle(
-                color: Colors.green,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
-      ),
+      appBar: GlobalAppbar(),
 
+      // 🟢 Body
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -81,26 +78,23 @@ class _EcoHomeScreenState extends State<EcoHomeScreen> {
             _profileCard(),
             const SizedBox(height: 18),
 
-            Row(
+            // Heart rate + Steps
+            Column(
               children: [
-                Expanded(
-                  child: _metricCard(
-                    title: "Average Heart Rate This Week",
-                    value: "85.7 BPS",
-                    color: Colors.black,
-                    valueColor: Colors.amber,
-                    icon: Icons.favorite,
-                  ),
+                _metricCard(
+                  title: "Average Heart Rate This Week",
+                  value: "85.7 BPS",
+                  color: Colors.black,
+                  valueColor: Colors.amber,
+                  icon: Icons.favorite,
                 ),
                 const SizedBox(width: 12),
-                Expanded(
-                  child: _metricCard(
-                    title: "Today's Step Count",
-                    value: "3021 Steps",
-                    color: Colors.black,
-                    valueColor: Colors.orange,
-                    icon: Icons.directions_walk,
-                  ),
+                _metricCard(
+                  title: "Today's Step Count",
+                  value: "3021 Steps",
+                  color: Colors.black,
+                  valueColor: Colors.orange,
+                  icon: Icons.directions_walk,
                 ),
               ],
             ),
@@ -253,37 +247,26 @@ class _EcoHomeScreenState extends State<EcoHomeScreen> {
   // 🟢 Profile Card
   static Widget _profileCard() {
     return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(48)),
       child: Padding(
         padding: const EdgeInsets.all(16),
-        child: Row(
+        child: Column(
           children: [
             const CircleAvatar(
               radius: 28,
               backgroundImage: AssetImage("assets/ecocity.jpg"),
             ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "Abidur Chowdhury",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      _infoColumn("Residence", "South Khulshi", Colors.black87),
-                      const SizedBox(width: 12),
-                      _infoColumn("Member Since", "2023", Colors.black87),
-                      const SizedBox(width: 12),
-                      _infoColumn("Score", "84", Colors.green),
-                    ],
-                  ),
-                ],
-              ),
+            const Text(
+              "Abidur Chowdhury",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _infoColumn("Eco Score", "100,000 pts", const Color(0xFF198811)),
+                _infoColumn("LeaderBoard", "#1", const Color(0xFF198811)),
+                _infoColumn("Eco Coins", "1M", const Color(0xFF198811)),
+              ],
             ),
           ],
         ),
@@ -292,66 +275,19 @@ class _EcoHomeScreenState extends State<EcoHomeScreen> {
   }
 
   static Widget _infoColumn(String title, String value, Color color) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(title, style: const TextStyle(color: Colors.grey, fontSize: 12)),
-        const SizedBox(height: 4),
-        Text(
-          value,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: color,
-            fontSize: 14,
-          ),
-        ),
-      ],
-    );
-  }
-
-  static Widget _metricCard({
-    required String title,
-    required String value,
-    required Color color,
-    required Color valueColor,
-    required IconData icon,
-  }) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade300),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.shade200,
-            blurRadius: 6,
-            spreadRadius: 2,
-          ),
-        ],
-      ),
-      child: Row(
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Icon(icon, color: Colors.black, size: 28),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(color: Colors.grey, fontSize: 12),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  value,
-                  style: TextStyle(
-                    color: valueColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                  ),
-                ),
-              ],
+          Text(title, style: const TextStyle(fontSize: 12)),
+          const SizedBox(height: 4),
+          Text(
+            value,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: color,
+              fontSize: 14,
             ),
           ),
         ],
@@ -359,6 +295,64 @@ class _EcoHomeScreenState extends State<EcoHomeScreen> {
     );
   }
 
+  // ---------------- Metrics Card ----------------
+  static Widget _metricCard({
+    required String title,
+    required String value,
+    required Color color,
+    required Color valueColor,
+    required IconData icon,
+  }) {
+    return Row(
+      children: [
+        // SizedBox(child: SvgPicture.asset("assets/svg/ecg.svg",)),
+        Container(
+          height: 84,
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: Colors.grey.shade300),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.shade200,
+                blurRadius: 6,
+                spreadRadius: 2,
+              ),
+            ],
+          ),
+          child: Row(
+            children: [
+              Icon(icon, color: Colors.white, size: 28),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: const TextStyle(color: Colors.grey, fontSize: 12),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      value,
+                      style: const TextStyle(
+                        color: Colors.orange,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  // ---------------- Alert Card ----------------
   static Widget _alertCard({
     required String title,
     required String value,
@@ -368,7 +362,7 @@ class _EcoHomeScreenState extends State<EcoHomeScreen> {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
@@ -397,6 +391,7 @@ class _EcoHomeScreenState extends State<EcoHomeScreen> {
     );
   }
 
+  // ---------------- Green Metrics ----------------
   static Widget _metricGreenCard(String title, String value, IconData icon) {
     return Container(
       width: double.infinity,
@@ -441,6 +436,7 @@ class _EcoHomeScreenState extends State<EcoHomeScreen> {
     );
   }
 
+  // ---------------- Map Card ----------------
   static Widget _mapCard() {
     return Column(
       children: [
@@ -491,6 +487,7 @@ class _EcoHomeScreenState extends State<EcoHomeScreen> {
   }
 }
 
+// ✅ Small widget for stats under the map
 class MapStatCard extends StatelessWidget {
   final String value;
   final String label;
