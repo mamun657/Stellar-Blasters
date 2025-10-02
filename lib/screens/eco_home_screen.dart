@@ -2,7 +2,10 @@ import 'package:eco_city/widgets/global_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
+import '../services/api_handler.dart';
 import 'eco_route_screen.dart';
 import 'predict_ai_screen.dart';
 import 'eco_urban_health_screen.dart';
@@ -16,6 +19,42 @@ class EcoHomeScreen extends StatefulWidget {
 }
 
 class _EcoHomeScreenState extends State<EcoHomeScreen> {
+  final ccaApi = ApiHandler('https://ecosmartcity-api-1.onrender.com');
+  double? solarInsolation;
+  double? co2Avoided;
+
+  Future<void> _fetchCCAData() async {
+    try {
+      var request = http.Request('GET', Uri.parse(
+        'https://ecosmartcity-api-1.onrender.com/calculate_carbon_avoidance?lat=24.3610326&lon=93.8411746&panel_efficiency=0.2&carbon_intensity=400'
+      ));
+      http.StreamedResponse streamResponse = await request.send();
+      
+      if (streamResponse.statusCode == 200) {
+        String rawResponse = await streamResponse.stream.bytesToString();
+        print("Raw API Response: $rawResponse");
+        
+        Map<String, dynamic> jsonResponse = json.decode(rawResponse);
+        var carbonData = jsonResponse["potential_carbon_avoidance"];
+        
+        setState(() {
+          solarInsolation = (carbonData["solar_insolation_kwh_per_m2_per_day"] as num).toDouble();
+          co2Avoided = (carbonData["co2_avoided_grams_per_day"] as num).toDouble();
+        });
+      } else {
+        print("API Error: ${streamResponse.reasonPhrase}");
+      }
+    } catch (e) {
+      print('Error fetching CCA data: $e');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchCCAData();
+  }
+
   int _selectedIndex = 0;
 
   void _onNavTap(int index) {
@@ -88,7 +127,7 @@ class _EcoHomeScreenState extends State<EcoHomeScreen> {
                   valueColor: Colors.amber,
                   icon: Icons.favorite,
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(height: 12),
                 _metricCard(
                   title: "Today's Step Count",
                   value: "3021 Steps",
@@ -128,9 +167,23 @@ class _EcoHomeScreenState extends State<EcoHomeScreen> {
 
             _metricGreenCard("Air Quality Index (AQI)", "7", Icons.air),
             const SizedBox(height: 12),
-            _metricGreenCard("Solar Radiation", "3.5", Icons.wb_sunny),
+            _metricGreenCard(
+              "Solar Radiation",
+              solarInsolation != null 
+                ? "${solarInsolation!.toStringAsFixed(2)} kWh/m²/day"
+                : "Calculating...",
+              Icons.wb_sunny,
+              description: "Potential solar energy that can be harvested"
+            ),
             const SizedBox(height: 12),
-            _metricGreenCard("CO2 Emission Avoided", "125.3 gm/day", Icons.eco),
+            _metricGreenCard(
+              "CO2 Emission Avoided",
+              co2Avoided != null
+                ? "${co2Avoided!.toStringAsFixed(1)} gm/day"
+                : "Calculating...",
+              Icons.eco,
+              description: "Daily carbon emission reduction"
+            ),
 
             const SizedBox(height: 18),
             Center(
@@ -303,52 +356,47 @@ class _EcoHomeScreenState extends State<EcoHomeScreen> {
     required Color valueColor,
     required IconData icon,
   }) {
-    return Row(
-      children: [
-        // SizedBox(child: SvgPicture.asset("assets/svg/ecg.svg",)),
-        Container(
-          height: 84,
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: Colors.grey.shade300),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.shade200,
-                blurRadius: 6,
-                spreadRadius: 2,
-              ),
-            ],
+    return Container(
+      height: 84,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.grey.shade300),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.shade200,
+            blurRadius: 6,
+            spreadRadius: 2,
           ),
-          child: Row(
-            children: [
-              Icon(icon, color: Colors.white, size: 28),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: const TextStyle(color: Colors.grey, fontSize: 12),
-                    ),
-                    const SizedBox(height: 6),
-                    Text(
-                      value,
-                      style: const TextStyle(
-                        color: Colors.orange,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
-                      ),
-                    ),
-                  ],
+        ],
+      ),
+      child: Row(
+        children: [
+          Icon(icon, color: Colors.white, size: 28),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(color: Colors.grey, fontSize: 12),
                 ),
-              ),
-            ],
+                const SizedBox(height: 6),
+                Text(
+                  value,
+                  style: const TextStyle(
+                    color: Colors.orange,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -392,7 +440,12 @@ class _EcoHomeScreenState extends State<EcoHomeScreen> {
   }
 
   // ---------------- Green Metrics ----------------
-  static Widget _metricGreenCard(String title, String value, IconData icon) {
+  static Widget _metricGreenCard(
+    String title,
+    String value,
+    IconData icon, {
+    String? description,
+  }) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -427,7 +480,24 @@ class _EcoHomeScreenState extends State<EcoHomeScreen> {
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 4),
-                Text(value, style: const TextStyle(color: Colors.green)),
+                Text(
+                  value,
+                  style: const TextStyle(
+                    color: Colors.green,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                if (description != null) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    description,
+                    style: TextStyle(
+                      color: Colors.grey[600],
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
               ],
             ),
           ),
@@ -470,7 +540,7 @@ class _EcoHomeScreenState extends State<EcoHomeScreen> {
         Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: Colors.green.withOpacity(0.1),
+            color: Colors.green.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(16),
           ),
           child: Row(
