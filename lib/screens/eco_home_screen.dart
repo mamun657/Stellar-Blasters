@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import '../services/api_handler.dart';
+import '../services/location_service.dart';
 import 'eco_route_screen.dart';
 import 'predict_ai_screen.dart';
 import 'eco_urban_health_screen.dart';
@@ -22,11 +23,32 @@ class _EcoHomeScreenState extends State<EcoHomeScreen> {
   final ccaApi = ApiHandler('https://ecosmartcity-api-1.onrender.com');
   double? solarInsolation;
   double? co2Avoided;
+  double? lat;
+  double? lon;
+
+  Future<void> _getCurrentLocation() async {
+    try {
+      final position = await LocationService.getCurrentLocation();
+      setState(() {
+        lat = position.latitude;
+        lon = position.longitude;
+      });
+      _fetchCCAData(); // Fetch CCA data after getting location
+    } on LocationServiceException catch (e) {
+      print('Location error: ${e.message}');
+      // Use default coordinates if location access fails
+      setState(() {
+        lat = 0.00;
+        lon = 0.00;
+      });
+      _fetchCCAData();
+    }
+  }
 
   Future<void> _fetchCCAData() async {
     try {
       var request = http.Request('GET', Uri.parse(
-        'https://ecosmartcity-api-1.onrender.com/calculate_carbon_avoidance?lat=24.3610326&lon=93.8411746&panel_efficiency=0.2&carbon_intensity=400'
+        'https://ecosmartcity-api-1.onrender.com/calculate_carbon_avoidance?lat=$lat&lon=$lon&panel_efficiency=0.2&carbon_intensity=400'
       ));
       http.StreamedResponse streamResponse = await request.send();
       
@@ -52,7 +74,7 @@ class _EcoHomeScreenState extends State<EcoHomeScreen> {
   @override
   void initState() {
     super.initState();
-    _fetchCCAData();
+    _getCurrentLocation();
   }
 
   int _selectedIndex = 0;
@@ -507,7 +529,7 @@ class _EcoHomeScreenState extends State<EcoHomeScreen> {
   }
 
   // ---------------- Map Card ----------------
-  static Widget _mapCard() {
+  Widget _mapCard() {
     return Column(
       children: [
         Card(
@@ -519,15 +541,15 @@ class _EcoHomeScreenState extends State<EcoHomeScreen> {
             child: SizedBox(
               height: 180,
               child: GoogleMap(
-                initialCameraPosition: const CameraPosition(
-                  target: LatLng(22.3569, 91.7832),
+                initialCameraPosition: CameraPosition(
+                  target: LatLng(lat ?? 0.00, lon ?? 0.00),
                   zoom: 13,
                 ),
                 markers: {
-                  const Marker(
-                    markerId: MarkerId('chattogram'),
-                    position: LatLng(22.3569, 91.7832),
-                    infoWindow: InfoWindow(title: "South Khulshi, Chattogram"),
+                  Marker(
+                    markerId: const MarkerId('current_location'),
+                    position: LatLng(lat ?? 0.00, lon ?? 0.00),
+                    infoWindow: const InfoWindow(title: "Current Location"),
                   ),
                 },
                 myLocationButtonEnabled: false,
