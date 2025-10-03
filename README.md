@@ -1,86 +1,100 @@
-🌍 Eco City
+Eco City
 
-Eco City is a Flutter application designed to promote sustainable living and provide users with a smart, data-driven experience. It integrates Firebase Authentication and Cloud Firestore for secure user management while also laying the foundation to incorporate Name Data, Prediction Data, and Environmental Intelligence Data to support healthier cities and informed decision-making.
+Team Stellar Blasters presents Eco City – Building Smarter, Greener, Resilient Cities with NASA Data
 
-✨ Features
+Introduction
 
-🔑 Authentication
+Welcome to Eco City, an innovative mobile and web application designed to empower citizens, city planners, and communities with real-time insights into urban health and sustainability. Using authentic NASA Earth observation data, Eco City transforms complex climate and environmental challenges—like air pollution, flooding, and heat stress—into simple, actionable solutions for everyday life.
 
-Sign up with email & password
+Whether you’re tracking your personal eco-score, navigating cleaner travel routes, or exploring future urban health scenarios, Eco City turns science into action for a healthier and more resilient tomorrow.
 
-Login & logout support
+Demo & Prototype
 
-Real-time auth state management with Firebase
+ YouTube link (240 sec): [Watch Demo](https://www.youtube.com/watch?v=I5k91xS1UC0)
 
-🏠 Screens
+ Figma  : [View Design](https://www.figma.com/design/VkOrKPdkV8WaXcDQfB98IJ/Stellar-Blasters?node-id=0-1&p=f&t=8jjcpIo2fRH4AXsz-0)
 
-Login Screen – Email/password login form
+Team Stellar Blasters
 
-Signup Screen – Create a new account
+Mohammed Minul Islam – Team Leader & Mobile App Developer
 
-Home Screen – Dashboard for eco insights
+Muhammed Hossain – Software Developer & Outreach Coordinator
 
-📊 Data & Intelligence
+Umme Benin Yeasmin Meem – Backend & Machine Learning Developer
 
-Name Data – User-specific personalization (profiles, preferences, eco scores)
+Shahriar Mohammad Aqib – UI/UX Designer & Branding Lead
 
-Prediction Data – Forecast trends like energy use, pollution exposure, or daily eco actions
+Kazi Namira Meyheg Sanam – Frontend Developer & UI/UX Designer
 
-Environmental Intelligence Data – Integration with real-world datasets (climate, air quality, green index, etc.) to guide sustainable decisions
+Mohammad Rubaidul Alam – Video Editor & Content Writer
 
-🔥 Firebase Integration
+Core Features
 
-Firebase Core
+Eco Dashboard – Track Eco Score, coins, leaderboard rank, heart rate, step count, and personal environmental impact.
 
-Firebase Auth
+Eco Prediction – AI-powered insights on air quality, CO₂ emissions, solar potential, and plant watering times using NASA POWER API.
 
-Cloud Firestore
+Eco Route – Interactive navigation with pollution levels, average temperature, and environmental impact.
 
-🧪 Testing
+Relocate Guidance – Find safer, sustainable zones using datasets from NASA SEDAC, Landsat, MODIS, OMI, and GPM.
 
-Unit & widget tests using flutter_test
+Smart Drainage – Monitor rainfall, soil moisture, and flood-risk hotspots using NASA GRACE & GPM data.
 
-Example test ensures login screen loads properly🌍 Eco City
+Urban Health – “What-if Scenario Builder” to simulate how parks, highways, or hospitals impact city resilience.
 
-Eco City is a Flutter application designed to promote sustainable living and provide users with a smart, data-driven experience. It integrates Firebase Authentication and Cloud Firestore for secure user management while also laying the foundation to incorporate Name Data, Prediction Data, and Environmental Intelligence Data to support healthier cities and informed decision-making.
+Reward System – Earn eco-coins for green actions (cycling, planting, eco-bag usage) and redeem for café discounts or transport perks.
 
-✨ Features
+Tools & Technologies
 
-🔑 Authentication
+Languages & Frameworks: Dart, Flutter
 
-Sign up with email & password
+Backend: Firebase Authentication & Cloud Firestore
 
-Login & logout support
+Mapping & Navigation: Google Maps API
 
-Real-time auth state management with Firebase
+Design & Prototyping: Figma, Filmora, Leonardo AI (graphics), VEO3 (video generation)
 
-🏠 Screens
+NASA Data Sources:
 
-Login Screen – Email/password login form
+NASA POWER API
+ – CO₂ emissions & solar radiation
 
-Signup Screen – Create a new account
+NASA SEDAC
+ – Air quality & population datasets
 
-Home Screen – Dashboard for eco insights
+NASA GIBS API
+ – Satellite imagery & mapping
 
-📊 Data & Intelligence
+NASA GRACE
+ – Groundwater & soil moisture
 
-Name Data – User-specific personalization (profiles, preferences, eco scores)
+NASA GPM
+ – Rainfall & precipitation
 
-Prediction Data – Forecast trends like energy use, pollution exposure, or daily eco actions
+NASA MODIS
+ – Land cover & vegetation indices
 
-Environmental Intelligence Data – Integration with real-world datasets (climate, air quality, green index, etc.) to guide sustainable decisions
+NASA Landsat
+ – Urban expansion & land use change
 
-🔥 Firebase Integration
+NASA OMI
+ – Atmospheric pollution monitoring
 
-Firebase Core
+Educational & Social Goals
 
-Firebase Auth
+Promote Real-Time Awareness – Live data on air quality, floods, and heat stress.
 
-Cloud Firestore
+Encourage Green Behavior – Reward eco-friendly actions to make sustainability fun.
 
-🧪 Testing
+Support Smart Cities – Predictive tools for better urban planning.
 
-Unit & widget tests using flutter_test
+Strengthen Community Impact – Connect individual efforts to collective progress.
 
-Example test ensures login screen loads properly
+Inspire Future Leaders – Motivate youth to build greener, safer, and more livable cities.
 
+Feedback & Support
+
+We value your feedback! 💡
+If you have suggestions, questions, or encounter issues while using Eco City, feel free to connect with us.
+
+Together, we can reimagine urban living and build cities that thrive in harmony with our planet. 🌱
