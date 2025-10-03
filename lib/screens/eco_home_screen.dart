@@ -1,12 +1,115 @@
+import 'package:eco_city/widgets/global_appbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import '../services/auth_service.dart';
-import 'eco_urban_health_screen.dart';
-import 'ai_chat_screen.dart';
-import 'relocate_screen.dart'; 
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
-class EcoHomeScreen extends StatelessWidget {
+import '../services/api_handler.dart';
+import '../services/location_service.dart';
+import 'eco_route_screen.dart';
+import 'predict_ai_screen.dart';
+import 'eco_urban_health_screen.dart';
+import 'relocate_screen.dart';
+
+class EcoHomeScreen extends StatefulWidget {
   const EcoHomeScreen({super.key});
+
+  @override
+  State<EcoHomeScreen> createState() => _EcoHomeScreenState();
+}
+
+class _EcoHomeScreenState extends State<EcoHomeScreen> {
+  final ccaApi = ApiHandler('https://ecosmartcity-api-1.onrender.com');
+  double? solarInsolation;
+  double? co2Avoided;
+  double? lat;
+  double? lon;
+
+  Future<void> _getCurrentLocation() async {
+    try {
+      final position = await LocationService.getCurrentLocation();
+      setState(() {
+        lat = position.latitude;
+        lon = position.longitude;
+      });
+      _fetchCCAData(); // Fetch CCA data after getting location
+    } on LocationServiceException catch (e) {
+      print('Location error: ${e.message}');
+      // Use default coordinates if location access fails
+      setState(() {
+        lat = 0.00;
+        lon = 0.00;
+      });
+      _fetchCCAData();
+    }
+  }
+
+  Future<void> _fetchCCAData() async {
+    try {
+      var request = http.Request('GET', Uri.parse(
+        'https://ecosmartcity-api-1.onrender.com/calculate_carbon_avoidance?lat=$lat&lon=$lon&panel_efficiency=0.2&carbon_intensity=400'
+      ));
+      http.StreamedResponse streamResponse = await request.send();
+      
+      if (streamResponse.statusCode == 200) {
+        String rawResponse = await streamResponse.stream.bytesToString();
+        print("Raw API Response: $rawResponse");
+        
+        Map<String, dynamic> jsonResponse = json.decode(rawResponse);
+        var carbonData = jsonResponse["potential_carbon_avoidance"];
+        
+        setState(() {
+          solarInsolation = (carbonData["solar_insolation_kwh_per_m2_per_day"] as num).toDouble();
+          co2Avoided = (carbonData["co2_avoided_grams_per_day"] as num).toDouble();
+        });
+      } else {
+        print("API Error: ${streamResponse.reasonPhrase}");
+      }
+    } catch (e) {
+      print('Error fetching CCA data: $e');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getCurrentLocation();
+  }
+
+  int _selectedIndex = 0;
+
+  void _onNavTap(int index) {
+    if (index == 1) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const RelocateScreen()),
+      );
+      return;
+    }
+    if (index == 2) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const EcoUrbanHealthScreen()),
+      );
+      return;
+    }
+    if (index == 3) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const EcoRouteScreen()),
+      );
+      return;
+    }
+    if (index == 4) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const PredictAiScreen()),
+      );
+      return;
+    }
+    setState(() => _selectedIndex = index);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -14,35 +117,7 @@ class EcoHomeScreen extends StatelessWidget {
       backgroundColor: Colors.white,
 
       // 🟢 AppBar
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        title: Row(
-          children: [
-            Image.asset("assets/ecocity.jpg", height: 32),
-            const SizedBox(width: 8),
-            const Text(
-              "Eco City",
-              style: TextStyle(
-                color: Colors.green,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout, color: Colors.black87),
-            onPressed: () async {
-              await AuthService().signOut();
-              if (context.mounted) {
-                Navigator.pushReplacementNamed(context, '/login');
-              }
-            },
-          ),
-          const SizedBox(width: 16),
-        ],
-      ),
+      appBar: GlobalAppbar(),
 
       // 🟢 Body
       body: SingleChildScrollView(
@@ -62,29 +137,25 @@ class EcoHomeScreen extends StatelessWidget {
             const SizedBox(height: 16),
 
             _profileCard(),
-            const SizedBox(height: 16),
+            const SizedBox(height: 18),
 
             // Heart rate + Steps
-            Row(
+            Column(
               children: [
-                Expanded(
-                  child: _metricCard(
-                    title: "Average Heart Rate This Week",
-                    value: "85.7 BPS",
-                    color: Colors.black,
-                    valueColor: Colors.amber,
-                    icon: Icons.favorite,
-                  ),
+                _metricCard(
+                  title: "Average Heart Rate This Week",
+                  value: "85.7 BPS",
+                  color: Colors.black,
+                  valueColor: Colors.amber,
+                  icon: Icons.favorite,
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _metricCard(
-                    title: "Today's Step Count",
-                    value: "3021 Steps",
-                    color: Colors.black,
-                    valueColor: Colors.orange,
-                    icon: Icons.directions_walk,
-                  ),
+                const SizedBox(height: 12),
+                _metricCard(
+                  title: "Today's Step Count",
+                  value: "3021 Steps",
+                  color: Colors.black,
+                  valueColor: Colors.orange,
+                  icon: Icons.directions_walk,
                 ),
               ],
             ),
@@ -118,98 +189,159 @@ class EcoHomeScreen extends StatelessWidget {
 
             _metricGreenCard("Air Quality Index (AQI)", "7", Icons.air),
             const SizedBox(height: 12),
-            _metricGreenCard("Solar Radiation", "3.5", Icons.wb_sunny),
+            _metricGreenCard(
+              "Solar Radiation",
+              solarInsolation != null 
+                ? "${solarInsolation!.toStringAsFixed(2)} kWh/m²/day"
+                : "Calculating...",
+              Icons.wb_sunny,
+              description: "Potential solar energy that can be harvested"
+            ),
             const SizedBox(height: 12),
-            _metricGreenCard("CO2 Emission Avoided", "125.3 gm/day", Icons.eco),
+            _metricGreenCard(
+              "CO2 Emission Avoided",
+              co2Avoided != null
+                ? "${co2Avoided!.toStringAsFixed(1)} gm/day"
+                : "Calculating...",
+              Icons.eco,
+              description: "Daily carbon emission reduction"
+            ),
 
+            const SizedBox(height: 18),
+            Center(
+              child: ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.black,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 28,
+                    vertical: 14,
+                  ),
+                ),
+                child: const Text(
+                  "See All",
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
+              ),
+            ),
             const SizedBox(height: 16),
 
             _mapCard(),
+            const SizedBox(height: 24),
           ],
         ),
       ),
 
-      // 🟢 Bottom Navigation
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        currentIndex: 0, // Home selected by default
-        selectedItemColor: Colors.green,
-        unselectedItemColor: Colors.black54,
-        onTap: (i) {
-          if (i == 0) {
-            // Already Home
-          } else if (i == 1) {
-            // ✅ Relocate page
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const RelocateScreen()),
-            );
-          } else if (i == 2) {
-            // Urban Health page
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const EcoUrbanHealthScreen()),
-            );
-          } else if (i == 4) {
-            // AI Chat page
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const AIChatScreen()),
-            );
-          }
-        },
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.compare_arrows),
-            label: "Relocate",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.health_and_safety),
-            label: "Urban H",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.navigation),
-            label: "Navigation",
-          ),
-          BottomNavigationBarItem(icon: Icon(Icons.star), label: "AI Predict"),
-        ],
+      bottomNavigationBar: _buildBottomNav(),
+    );
+  }
+
+  // 🟢 Bottom Navigation
+  Widget _buildBottomNav() {
+    return Material(
+      elevation: 8,
+      color: Colors.green[200],
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 18),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            _navItem(
+              Icons.home,
+              "Home",
+              _selectedIndex == 0,
+              () => _onNavTap(0),
+            ),
+            _navItem(
+              Icons.route_rounded,
+              "Relocate",
+              _selectedIndex == 1,
+              () => _onNavTap(1),
+            ),
+            _navItem(
+              Icons.warning_amber_rounded,
+              "Urban H",
+              _selectedIndex == 2,
+              () => _onNavTap(2),
+            ),
+            _navItem(
+              Icons.location_on,
+              "Navigation",
+              _selectedIndex == 3,
+              () => _onNavTap(3),
+            ),
+            _navItem(
+              Icons.smart_toy,
+              "AI Predict",
+              _selectedIndex == 4,
+              () => _onNavTap(4),
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  // ---------------- Profile Card ----------------
+  Widget _navItem(
+    IconData icon,
+    String label,
+    bool selected,
+    VoidCallback onTap,
+  ) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        decoration: selected
+            ? BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(24),
+              )
+            : null,
+        child: Row(
+          children: [
+            Icon(icon, color: selected ? Colors.black87 : Colors.white70),
+            const SizedBox(width: 6),
+            if (selected)
+              Text(
+                label,
+                style: const TextStyle(
+                  color: Colors.black87,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // 🟢 Profile Card
   static Widget _profileCard() {
     return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(48)),
       child: Padding(
         padding: const EdgeInsets.all(16),
-        child: Row(
+        child: Column(
           children: [
             const CircleAvatar(
               radius: 28,
               backgroundImage: AssetImage("assets/ecocity.jpg"),
             ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "Abidur Chowdhury",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      _infoColumn("Eco Score", "100,000 pts", Colors.green),
-                      _infoColumn("Leader Board", "1", Colors.black),
-                      _infoColumn("Eco Coins", "1M", Colors.green),
-                    ],
-                  ),
-                ],
-              ),
+            const Text(
+              "Abidur Chowdhury",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _infoColumn("Eco Score", "100,000 pts", const Color(0xFF198811)),
+                _infoColumn("LeaderBoard", "#1", const Color(0xFF198811)),
+                _infoColumn("Eco Coins", "1M", const Color(0xFF198811)),
+              ],
             ),
           ],
         ),
@@ -218,20 +350,23 @@ class EcoHomeScreen extends StatelessWidget {
   }
 
   static Widget _infoColumn(String title, String value, Color color) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(title, style: const TextStyle(color: Colors.grey, fontSize: 12)),
-        const SizedBox(height: 4),
-        Text(
-          value,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: color,
-            fontSize: 14,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(title, style: const TextStyle(fontSize: 12)),
+          const SizedBox(height: 4),
+          Text(
+            value,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: color,
+              fontSize: 14,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -244,10 +379,19 @@ class EcoHomeScreen extends StatelessWidget {
     required IconData icon,
   }) {
     return Container(
+      height: 84,
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: color,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.grey.shade300),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.shade200,
+            blurRadius: 6,
+            spreadRadius: 2,
+          ),
+        ],
       ),
       child: Row(
         children: [
@@ -259,13 +403,13 @@ class EcoHomeScreen extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: const TextStyle(color: Colors.white, fontSize: 12),
+                  style: const TextStyle(color: Colors.grey, fontSize: 12),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 6),
                 Text(
                   value,
-                  style: TextStyle(
-                    color: valueColor,
+                  style: const TextStyle(
+                    color: Colors.orange,
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
                   ),
@@ -318,30 +462,64 @@ class EcoHomeScreen extends StatelessWidget {
   }
 
   // ---------------- Green Metrics ----------------
-  static Widget _metricGreenCard(String title, String value, IconData icon) {
+  static Widget _metricGreenCard(
+    String title,
+    String value,
+    IconData icon, {
+    String? description,
+  }) {
     return Container(
-      padding: const EdgeInsets.all(14),
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: Colors.green.shade100,
-        borderRadius: BorderRadius.circular(16),
+        color: Colors.green.shade50,
+        borderRadius: BorderRadius.circular(40),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.green.shade100.withOpacity(0.4),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Row(
         children: [
-          Icon(icon, color: Colors.green, size: 28),
-          const SizedBox(width: 8),
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: Colors.green.shade200,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, color: Colors.green.shade900, size: 28),
+          ),
+          const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: const TextStyle(color: Colors.black54)),
-                const SizedBox(height: 6),
+                Text(
+                  title,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 4),
                 Text(
                   value,
                   style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
+                    color: Colors.green,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
+                if (description != null) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    description,
+                    style: TextStyle(
+                      color: Colors.grey[600],
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
               ],
             ),
           ),
@@ -351,27 +529,32 @@ class EcoHomeScreen extends StatelessWidget {
   }
 
   // ---------------- Map Card ----------------
-  static Widget _mapCard() {
+  Widget _mapCard() {
     return Column(
       children: [
-        SizedBox(
-          height: 200,
+        Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(16),
-            child: GoogleMap(
-              initialCameraPosition: const CameraPosition(
-                target: LatLng(22.3569, 91.7832),
-                zoom: 12,
-              ),
-              markers: {
-                Marker(
-                  markerId: const MarkerId("chattogram"),
-                  position: const LatLng(22.3569, 91.7832),
-                  infoWindow: const InfoWindow(
-                    title: "South Khulshi, Chattogram",
-                  ),
+            child: SizedBox(
+              height: 180,
+              child: GoogleMap(
+                initialCameraPosition: CameraPosition(
+                  target: LatLng(lat ?? 0.00, lon ?? 0.00),
+                  zoom: 13,
                 ),
-              },
+                markers: {
+                  Marker(
+                    markerId: const MarkerId('current_location'),
+                    position: LatLng(lat ?? 0.00, lon ?? 0.00),
+                    infoWindow: const InfoWindow(title: "Current Location"),
+                  ),
+                },
+                myLocationButtonEnabled: false,
+                zoomControlsEnabled: false,
+              ),
             ),
           ),
         ),

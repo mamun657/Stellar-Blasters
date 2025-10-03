@@ -115,7 +115,7 @@ class _SignupScreenState extends State<SignupScreen> {
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       prefixIcon: Padding(padding: const EdgeInsets.all(8.0), child: prefix),
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12), // more rectangular (was 30)
+        borderRadius: BorderRadius.circular(12), 
         borderSide: BorderSide.none,
       ),
     );
@@ -132,7 +132,7 @@ class _SignupScreenState extends State<SignupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, // set background to white
+      backgroundColor: Colors.white, 
       appBar: AppBar(
         title: const Text('Sign Up'),
         backgroundColor: Colors.green,
@@ -310,7 +310,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     Align(
                       alignment: Alignment.center,
                       child: SizedBox(
-                        width: 200, // reduced width for a smaller button
+                        width: 200, 
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.green,

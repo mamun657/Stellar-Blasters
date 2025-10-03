@@ -38,7 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
         _passwordController.text.trim(),
       );
 
-      // Navigate to home on successful login
+     
       if (!mounted) return;
       Navigator.pushReplacementNamed(context, '/home');
     } catch (e) {
@@ -87,7 +87,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     key: _formKey,
                     child: Column(
                       children: [
-                        // Email field (pill)
+                  
                         TextFormField(
                           controller: _emailController,
                           decoration: inputDecoration.copyWith(
@@ -119,7 +119,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           },
                         ),
                         const SizedBox(height: 16),
-                        // Password field (pill) with toggle
+                       
                         TextFormField(
                           controller: _passwordController,
                           decoration: inputDecoration.copyWith(
@@ -159,7 +159,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             return null;
                           },
                         ),
-                        // Forgot password aligned right
+                       
                         Align(
                           alignment: Alignment.centerRight,
                           child: TextButton(
@@ -187,11 +187,11 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                         const SizedBox(height: 8),
-                        // Sign In button (pill)
+                    
                         Align(
                           alignment: Alignment.center,
                           child: SizedBox(
-                            width: 200, // reduced width for a smaller button
+                            width: 200,
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.green,
