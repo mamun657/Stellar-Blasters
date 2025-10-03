@@ -47,21 +47,27 @@ class _EcoHomeScreenState extends State<EcoHomeScreen> {
 
   Future<void> _fetchCCAData() async {
     try {
-      var request = http.Request('GET', Uri.parse(
-        'https://ecosmartcity-api-1.onrender.com/calculate_carbon_avoidance?lat=$lat&lon=$lon&panel_efficiency=0.2&carbon_intensity=400'
-      ));
+      var request = http.Request(
+        'GET',
+        Uri.parse(
+          'https://ecosmartcity-api-1.onrender.com/calculate_carbon_avoidance?lat=$lat&lon=$lon&panel_efficiency=0.2&carbon_intensity=400',
+        ),
+      );
       http.StreamedResponse streamResponse = await request.send();
-      
+
       if (streamResponse.statusCode == 200) {
         String rawResponse = await streamResponse.stream.bytesToString();
         print("Raw API Response: $rawResponse");
-        
+
         Map<String, dynamic> jsonResponse = json.decode(rawResponse);
         var carbonData = jsonResponse["potential_carbon_avoidance"];
-        
+
         setState(() {
-          solarInsolation = (carbonData["solar_insolation_kwh_per_m2_per_day"] as num).toDouble();
-          co2Avoided = (carbonData["co2_avoided_grams_per_day"] as num).toDouble();
+          solarInsolation =
+              (carbonData["solar_insolation_kwh_per_m2_per_day"] as num)
+                  .toDouble();
+          co2Avoided = (carbonData["co2_avoided_grams_per_day"] as num)
+              .toDouble();
         });
       } else {
         print("API Error: ${streamResponse.reasonPhrase}");
@@ -191,20 +197,20 @@ class _EcoHomeScreenState extends State<EcoHomeScreen> {
             const SizedBox(height: 12),
             _metricGreenCard(
               "Solar Radiation",
-              solarInsolation != null 
-                ? "${solarInsolation!.toStringAsFixed(2)} kWh/m²/day"
-                : "Calculating...",
+              solarInsolation != null
+                  ? "${solarInsolation!.toStringAsFixed(2)} kWh/m²/day"
+                  : "Calculating...",
               Icons.wb_sunny,
-              description: "Potential solar energy that can be harvested"
+              description: "Potential solar energy that can be harvested",
             ),
             const SizedBox(height: 12),
             _metricGreenCard(
               "CO2 Emission Avoided",
               co2Avoided != null
-                ? "${co2Avoided!.toStringAsFixed(1)} gm/day"
-                : "Calculating...",
+                  ? "${co2Avoided!.toStringAsFixed(1)} gm/day"
+                  : "Calculating...",
               Icons.eco,
-              description: "Daily carbon emission reduction"
+              description: "Daily carbon emission reduction",
             ),
 
             const SizedBox(height: 18),
@@ -244,42 +250,47 @@ class _EcoHomeScreenState extends State<EcoHomeScreen> {
     return Material(
       elevation: 8,
       color: Colors.green[200],
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 18),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            _navItem(
-              Icons.home,
-              "Home",
-              _selectedIndex == 0,
-              () => _onNavTap(0),
-            ),
-            _navItem(
-              Icons.route_rounded,
-              "Relocate",
-              _selectedIndex == 1,
-              () => _onNavTap(1),
-            ),
-            _navItem(
-              Icons.warning_amber_rounded,
-              "Urban H",
-              _selectedIndex == 2,
-              () => _onNavTap(2),
-            ),
-            _navItem(
-              Icons.location_on,
-              "Navigation",
-              _selectedIndex == 3,
-              () => _onNavTap(3),
-            ),
-            _navItem(
-              Icons.smart_toy,
-              "AI Predict",
-              _selectedIndex == 4,
-              () => _onNavTap(4),
-            ),
-          ],
+      child: SafeArea(
+        // Add SafeArea
+        child: Container(
+          height: 65, // Fixed height
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+          child: Row(
+            mainAxisAlignment:
+                MainAxisAlignment.spaceEvenly, // Changed to spaceEvenly
+            children: [
+              _navItem(
+                Icons.home,
+                "Home",
+                _selectedIndex == 0,
+                () => _onNavTap(0),
+              ),
+              _navItem(
+                Icons.route_rounded,
+                "Relocate",
+                _selectedIndex == 1,
+                () => _onNavTap(1),
+              ),
+              _navItem(
+                Icons.warning_amber_rounded,
+                "Urban H",
+                _selectedIndex == 2,
+                () => _onNavTap(2),
+              ),
+              _navItem(
+                Icons.location_on,
+                "Nav", // Shortened text
+                _selectedIndex == 3,
+                () => _onNavTap(3),
+              ),
+              _navItem(
+                Icons.smart_toy,
+                "AI", // Shortened text
+                _selectedIndex == 4,
+                () => _onNavTap(4),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -294,7 +305,7 @@ class _EcoHomeScreenState extends State<EcoHomeScreen> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
         decoration: selected
             ? BoxDecoration(
                 color: Colors.white,
@@ -302,17 +313,25 @@ class _EcoHomeScreenState extends State<EcoHomeScreen> {
               )
             : null,
         child: Row(
+          mainAxisSize: MainAxisSize.min, // Add this
           children: [
-            Icon(icon, color: selected ? Colors.black87 : Colors.white70),
-            const SizedBox(width: 6),
-            if (selected)
+            Icon(
+              icon,
+              color: selected ? Colors.black87 : Colors.white70,
+              size: 20, // Smaller icon size
+            ),
+            if (selected) ...[
+              const SizedBox(width: 4),
               Text(
                 label,
                 style: const TextStyle(
                   color: Colors.black87,
                   fontWeight: FontWeight.w600,
+                  fontSize: 12, // Smaller font size
                 ),
+                overflow: TextOverflow.ellipsis, // Handle text overflow
               ),
+            ],
           ],
         ),
       ),
@@ -338,7 +357,11 @@ class _EcoHomeScreenState extends State<EcoHomeScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _infoColumn("Eco Score", "100,000 pts", const Color(0xFF198811)),
+                _infoColumn(
+                  "Eco Score",
+                  "100,000 pts",
+                  const Color(0xFF198811),
+                ),
                 _infoColumn("LeaderBoard", "#1", const Color(0xFF198811)),
                 _infoColumn("Eco Coins", "1M", const Color(0xFF198811)),
               ],
@@ -350,22 +373,34 @@ class _EcoHomeScreenState extends State<EcoHomeScreen> {
   }
 
   static Widget _infoColumn(String title, String value, Color color) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(title, style: const TextStyle(fontSize: 12)),
-          const SizedBox(height: 4),
-          Text(
-            value,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: color,
-              fontSize: 14,
+    return Expanded(
+      // Add Expanded
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          vertical: 16.0,
+          horizontal: 8.0,
+        ), // Reduced padding
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              title,
+              style: const TextStyle(fontSize: 12),
+              textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
             ),
-          ),
-        ],
+            const SizedBox(height: 4),
+            Text(
+              value,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: color,
+                fontSize: 14,
+              ),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -514,10 +549,7 @@ class _EcoHomeScreenState extends State<EcoHomeScreen> {
                   const SizedBox(height: 4),
                   Text(
                     description,
-                    style: TextStyle(
-                      color: Colors.grey[600],
-                      fontSize: 12,
-                    ),
+                    style: TextStyle(color: Colors.grey[600], fontSize: 12),
                   ),
                 ],
               ],
