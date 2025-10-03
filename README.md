@@ -10,9 +10,9 @@ Whether you’re tracking your personal eco-score, navigating cleaner travel rou
 
 Demo & Prototype
 
- YouTube Demo (240 sec): [Watch Demo](https://www.youtube.com/watch?v=I5k91xS1UC0)
+ YouTube link (240 sec): [Watch Demo](https://www.youtube.com/watch?v=I5k91xS1UC0)
 
- Figma Prototype: [View Design](https://www.figma.com/design/VkOrKPdkV8WaXcDQfB98IJ/Stellar-Blasters?node-id=0-1&p=f&t=8jjcpIo2fRH4AXsz-0)
+ Figma  : [View Design](https://www.figma.com/design/VkOrKPdkV8WaXcDQfB98IJ/Stellar-Blasters?node-id=0-1&p=f&t=8jjcpIo2fRH4AXsz-0)
 
 Team Stellar Blasters
 
