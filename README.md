@@ -1,4 +1,4 @@
-🌍 Eco City
+Eco City
 
 Team Stellar Blasters presents Eco City – Building Smarter, Greener, Resilient Cities with NASA Data
 
@@ -10,9 +10,9 @@ Whether you’re tracking your personal eco-score, navigating cleaner travel rou
 
 Demo & Prototype
 
-🎥 YouTube Demo (240 sec): Watch here
+ YouTube Demo (240 sec): [Watch Demo](https://www.youtube.com/watch?v=I5k91xS1UC0)
 
-🎨 Figma Prototype: View Design
+ Figma Prototype: [View Design](https://www.figma.com/design/VkOrKPdkV8WaXcDQfB98IJ/Stellar-Blasters?node-id=0-1&p=f&t=8jjcpIo2fRH4AXsz-0)
 
 Team Stellar Blasters
 
@@ -95,4 +95,6 @@ Inspire Future Leaders – Motivate youth to build greener, safer, and more liva
 Feedback & Support
 
 We value your feedback! 💡
-If you have suggestions, questions, or encounter issues while using Eco City, feel free to connect with us. Together, we can reimagine urban living and build cities that thrive in harmony with our planet. 🌱
+If you have suggestions, questions, or encounter issues while using Eco City, feel free to connect with us.
+
+Together, we can reimagine urban living and build cities that thrive in harmony with our planet. 🌱
